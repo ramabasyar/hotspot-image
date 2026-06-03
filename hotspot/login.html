@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotspot Binawan University</title>
+    <link rel="stylesheet" href="style-v2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+<script>
+    const eyeSVG = `<svg class="icon-eye" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const eyeOffSVG = `<svg class="icon-eye-off" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6 0-10-7-10-7a20.24 20.24 0 0 1 4.33-5.12M9.88 9.88A3 3 0 0 0 14.12 14.12M1 1l22 22" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggle = document.querySelector('.toggle-password');
+        const pwd = document.getElementById('password');
+        if (!toggle || !pwd) return;
+        toggle.innerHTML = eyeSVG;
+        toggle.setAttribute('aria-pressed', 'false');
+        toggle.addEventListener('click', function () {
+            const isHidden = pwd.type === 'password';
+            pwd.type = isHidden ? 'text' : 'password';
+            toggle.innerHTML = isHidden ? eyeOffSVG : eyeSVG;
+            toggle.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+        });
+    });
+</script>
+
+<body>
+    <!-- Particle Background -->
+    <canvas id="particles"></canvas>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-area">
+                <img src="img/LogoUnivPutih.png" alt="Logo" class="logo">
+            </div>
+            <nav class="nav-menu">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#plans" class="nav-link">Login</a>
+                <a href="#support" class="nav-link">Support</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section with Campaign Slider -->
+    <section class="hero-section" id="home">
+        <div class="slider-container">
+            <div class="slides" id="slides-container">
+                <!-- Slides di-inject oleh JavaScript dari API -->
+            </div>
+            <div class="slider-controls">
+                <button class="slider-prev" onclick="changeSlide(-1)">
+                    <i class="arrow-left"></i>
+                </button>
+                <button class="slider-next" onclick="changeSlide(1)">
+                    <i class="arrow-right"></i>
+                </button>
+            </div>
+            <div class="slider-dots" id="slider-dots">
+                <!-- Dots di-inject oleh JavaScript -->
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-container">
+            <div class="scroll-indicator">
+                <div class="scroll-mouse">
+                    <div class="scroll-wheel"></div>
+                </div>
+                <p>Scroll to login</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Cards Section -->
+    <section class="info-section">
+        <div class="container">
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
+                        </svg>
+                    </div>
+                    <h3>Secure Connection</h3>
+                    <p>Bank-level encryption to keep your data safe</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                    </div>
+                    <h3>24/7 Uptime</h3>
+                    <p>Reliable connection whenever you need it</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                        </svg>
+                    </div>
+                    <h3>Lightning Fast</h3>
+                    <p>Optimized network for maximum speed</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Section -->
+    <section class="login-section" id="plans">
+        <div class="container">
+            <div class="login-wrapper">
+                <div class="login-form-container">
+                    <div class="form-header">
+                        <h2>Login to Continue</h2>
+                        <p>Enter your credentials to access the internet</p>
+                    </div>
+
+                    $(if chap-id)
+                    <form name="login" action="$(link-login-only)" method="post" onSubmit="return doLogin()">
+                        <input type="hidden" name="dst" value="$(link-orig)" />
+                        <input type="hidden" name="popup" value="true" />
+                        $(else)
+                        <form name="login" action="$(link-login-only)" method="post" onSubmit="return doLogin()">
+                            <input type="hidden" name="dst" value="$(link-orig)" />
+                            <input type="hidden" name="popup" value="false" />
+                            $(endif)
+
+                            <div class="form-row">
+                                <div class="input-field">
+                                    <input type="text" name="username" id="username" required>
+                                    <label for="username">Username</label>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="input-field">
+                                    <input type="password" name="password" id="password" required placeholder=" "
+                                        aria-label="Password">
+                                    <label for="password">Password</label>
+                                    <button type="button" class="toggle-password" aria-pressed="false"
+                                        aria-label="Toggle password visibility">
+                                        <svg class="icon-eye" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                                            <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" stroke="#9CA3AF"
+                                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            <circle cx="12" cy="12" r="3" stroke="#9CA3AF" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-options">
+                                <label class="checkbox-container">
+                                    <input type="checkbox">
+                                    <span class="checkmark"></span>
+                                    Remember me
+                                </label>
+                                <a href="#" class="forgot-link">Forgot password?</a>
+                            </div>
+
+                            <button type="submit" class="submit-btn">
+                                <span>Connect Now</span>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </button>
+                        </form>
+
+                        $(if error)
+                        <div class="error-box">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                            <p>$(error)</p>
+                        </div>
+                        $(endif)
+                </div>
+
+                <!-- Plans Preview -->
+                <div class="plans-preview">
+                    <h3>Easy to Connect</h3>
+                    <div class="plan-cards">
+                        <div class="plan-card featured">
+                            <div class="popular-badge">Login</div>
+                            <h4>Username</h4>
+                            <p class="plan-speed">Binawan</p>
+                            <p class="plan-price">Password</p>
+                            <p class="plan-speed">Binawan_University</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" data-target="10000">0</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="99">0</div>
+                    <div class="stat-label">% Uptime</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="500">0</div>
+                    <div class="stat-label">Coverage Areas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="24">0</div>
+                    <div class="stat-label">/7 Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="support">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Plans & Pricing</a></li>
+                        <li><a href="#">Coverage Map</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Acceptable Use</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hotspot Binawan University. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="/md5.js"></script>
+    <script>
+        var chapId = '$(chap-id)';
+        var chapChallenge = '$(chap-challenge)';
+
+        function doLogin() {
+            if (chapId !== '') {
+                document.login.password.value = hexMD5(chapId + document.login.password.value + chapChallenge);
+            }
+            return true;
+        }
+    </script>
+
+    <script>
+        // ── Particle Animation ─────────────────────────────────────────────────
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 - 1;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 100; i++) particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        // ── Banner Slider (Dynamic dari API) ───────────────────────────────────
+        //
+        // Ganti nilai BANNER_API dengan URL Go server Anda.
+        // Jika API tidak tersedia, slider otomatis pakai FALLBACK_BANNERS.
+        //
+        const BANNER_API_BASE = 'http://localhost:8098/api/banners';
+        const FALLBACK_BANNERS = ['img/Banner1.webp', 'img/Banner2.webp', 'img/Banner3.webp'];
+
+        // Deteksi device: desktop (>=768px) atau mobile (<768px)
+        function getDeviceType() {
+            return window.innerWidth >= 768 ? 'desktop' : 'mobile';
+        }
+
+        function getBannerEndpoint() {
+            return BANNER_API_BASE + '/' + getDeviceType();
+        }
+
+        let currentSlide  = 0;
+        let slideEls      = [];
+        let dotEls        = [];
+        let autoSlideTimer = null;
+
+        function buildSlides(urls) {
+            const slidesContainer = document.getElementById('slides-container');
+            const dotsContainer   = document.getElementById('slider-dots');
+
+            slidesContainer.innerHTML = '';
+            dotsContainer.innerHTML   = '';
+            slideEls = [];
+            dotEls   = [];
+
+            urls.forEach(function(url, i) {
+                // — slide element — pakai inline style background-image
+                //   agar tetap ikut logika CSS .slide yang sudah ada
+                var div = document.createElement('div');
+                div.className = 'slide' + (i === 0 ? ' active' : '');
+                div.style.backgroundImage    = "url('" + url + "')";
+                // Desktop: contain (landscape fit), Mobile: cover (portrait full)
+                div.style.backgroundSize     = getDeviceType() === 'mobile' ? 'cover' : 'contain';
+                div.style.backgroundRepeat   = 'no-repeat';
+                div.style.backgroundPosition = 'center';
+                div.innerHTML = '<div class="slide-content"></div>';
+                slidesContainer.appendChild(div);
+                slideEls.push(div);
+
+                // — dot element —
+                var dot = document.createElement('span');
+                dot.className = 'dot' + (i === 0 ? ' active' : '');
+                dot.addEventListener('click', (function(idx){ return function(){ goToSlide(idx); }; })(i));
+                dotsContainer.appendChild(dot);
+                dotEls.push(dot);
+            });
+
+            currentSlide = 0;
+            startAutoSlide();
+        }
+
+        function changeSlide(direction) {
+            if (!slideEls.length) return;
+            slideEls[currentSlide].classList.remove('active');
+            dotEls[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + direction + slideEls.length) % slideEls.length;
+            slideEls[currentSlide].classList.add('active');
+            dotEls[currentSlide].classList.add('active');
+        }
+
+        function goToSlide(index) {
+            if (!slideEls.length) return;
+            slideEls[currentSlide].classList.remove('active');
+            dotEls[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slideEls[currentSlide].classList.add('active');
+            dotEls[currentSlide].classList.add('active');
+        }
+
+        function startAutoSlide() {
+            if (autoSlideTimer) clearInterval(autoSlideTimer);
+            if (slideEls.length > 1) {
+                autoSlideTimer = setInterval(function(){ changeSlide(1); }, 10000);
+            }
+        }
+
+        async function loadBanners() {
+            try {
+                var endpoint = getBannerEndpoint();
+                var res = await fetch(endpoint, { signal: AbortSignal.timeout(4000) });
+                if (!res.ok) throw new Error('status ' + res.status);
+                var data = await res.json();
+                var urls = (data.banners || []).map(function(b){ return b.url; });
+                if (urls.length) { buildSlides(urls); return; }
+            } catch(e) {
+                console.warn('Banner API tidak tersedia, pakai fallback:', e.message);
+            }
+            buildSlides(FALLBACK_BANNERS);
+        }
+
+        // Re-load banners jika viewport berubah (desktop ↔ mobile)
+        let currentDevice = getDeviceType();
+        let resizeTimer = null;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                var newDevice = getDeviceType();
+                if (newDevice !== currentDevice) {
+                    currentDevice = newDevice;
+                    loadBanners();
+                }
+            }, 250);
+        });
+
+        // ── Counter Animation ──────────────────────────────────────────────────
+        const counters = document.querySelectorAll('.stat-number');
+        const speed = 200;
+
+        const countUp = () => {
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const count = +counter.innerText;
+                const increment = target / speed;
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + increment);
+                    setTimeout(countUp, 10);
+                } else {
+                    counter.innerText = target;
+                    if (counter.getAttribute('data-target') === '24') counter.innerText += '/7';
+                    else if (counter.getAttribute('data-target') === '99') counter.innerText += '%';
+                }
+            });
+        };
+
+        const observerOptions = { threshold: 0.5 };
+        const observerCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) { countUp(); observer.unobserve(entry.target); }
+            });
+        };
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) observer.observe(statsSection);
+
+        // ── Smooth scroll ──────────────────────────────────────────────────────
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // ── Init ───────────────────────────────────────────────────────────────
+        loadBanners();
+    </script>
+</body>
+</html>

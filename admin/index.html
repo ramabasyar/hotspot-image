@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Hotspot Banner</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #026938;
+      --green-light: #038a4a;
+      --gold: #CBA82D;
+      --bg: #f0f4f0;
+      --white: #fff;
+      --danger: #dc2626;
+      --text: #1a1a2e;
+      --gray: #6b7280;
+      --border: #e5e7eb;
+      --radius: 12px;
+      --shadow: 0 4px 20px rgba(0,0,0,.08);
+    }
+
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Header ── */
+    header {
+      background: var(--green);
+      color: #fff;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    }
+    header h1 { font-size: 1.3rem; font-weight: 700; }
+    header span { font-size: .85rem; opacity: .75; }
+
+    /* ── Layout ── */
+    .page { max-width: 1080px; margin: 0 auto; padding: 32px 20px; display: grid; gap: 28px; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+    .card h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .card h2 svg { color: var(--green); }
+
+    /* ── Auth ── */
+    #auth-section .input-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    #auth-section input {
+      flex: 1; min-width: 200px;
+      padding: 11px 14px; border: 2px solid var(--border);
+      border-radius: 8px; font-size: .95rem;
+      transition: border-color .2s;
+    }
+    #auth-section input:focus { outline: none; border-color: var(--green); }
+    #auth-status { margin-top: 10px; font-size: .88rem; color: var(--gray); }
+    #auth-status.ok { color: var(--green-light); }
+    #auth-status.err { color: var(--danger); }
+
+    /* ── Upload Area ── */
+    .upload-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 640px) {
+      .upload-grid { grid-template-columns: 1fr; }
+    }
+
+    .upload-slot {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .upload-slot-label {
+      font-weight: 600;
+      font-size: .9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .upload-slot-label .badge {
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 99px;
+      color: #fff;
+    }
+
+    .badge-desktop { background: #2563eb; }
+    .badge-mobile { background: #7c3aed; }
+
+    .drop-zone {
+      border: 2.5px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 32px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .25s;
+      background: #fafafa;
+      position: relative;
+    }
+    .drop-zone.drag { border-color: var(--green); background: #e8f5ee; }
+    .drop-zone.has-file { border-color: var(--green-light); border-style: solid; background: #f0faf4; }
+    .drop-zone svg { color: var(--green); margin-bottom: 8px; }
+    .drop-zone p { color: var(--gray); font-size: .85rem; }
+    .drop-zone strong { color: var(--text); }
+    .drop-zone input[type=file] { display: none; }
+
+    .drop-zone .preview-img {
+      max-width: 100%;
+      max-height: 140px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .file-info {
+      font-size: .82rem;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+
+    /* ── Btn ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 20px; border: none; border-radius: 8px;
+      font-size: .9rem; font-weight: 600; cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-primary { background: var(--green); color: #fff; }
+    .btn-primary:hover { background: var(--green-light); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn-danger { background: transparent; color: var(--danger); border: 1.5px solid var(--danger); padding: 6px 14px; font-size: .82rem; }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+
+    .upload-actions { margin-top: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+    /* ── Progress ── */
+    .progress-wrap { margin-top: 14px; display: none; }
+    .progress-bar-bg { background: var(--border); border-radius: 99px; height: 8px; overflow: hidden; }
+    .progress-bar { height: 100%; background: linear-gradient(90deg, var(--green), var(--gold)); border-radius: 99px; width: 0%; transition: width .3s; }
+    .progress-label { font-size: .82rem; color: var(--gray); margin-top: 6px; }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--text); color: #fff;
+      padding: 12px 20px; border-radius: 10px;
+      font-size: .9rem; box-shadow: 0 4px 20px rgba(0,0,0,.2);
+      transform: translateY(80px); opacity: 0;
+      transition: all .3s; pointer-events: none; z-index: 999;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { background: var(--green); }
+    #toast.error { background: var(--danger); }
+
+    /* ── Banner Grid ── */
+    .banner-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+
+    .banner-pair-card {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: box-shadow .2s;
+    }
+    .banner-pair-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.1); }
+
+    .pair-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: #f9fafb;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pair-slot {
+      font-size: .78rem;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 99px;
+      background: var(--gold);
+      color: var(--text);
+    }
+    .pair-slot.inactive { background: var(--border); color: var(--gray); }
+
+    .pair-date { font-size: .75rem; color: #aaa; }
+
+    .pair-images {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .pair-images .img-col {
+      padding: 8px;
+    }
+    .pair-images .img-col-label {
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--gray);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .pair-images img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #f0f0f0;
+    }
+
+    .pair-footer {
+      padding: 8px 14px 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .empty-state { text-align: center; padding: 48px; color: var(--gray); }
+    .empty-state svg { margin-bottom: 12px; opacity: .4; }
+    .loading { text-align: center; padding: 32px; color: var(--gray); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    /* ── Config note ── */
+    .config-note { background: #fffbeb; border: 1px solid var(--gold); border-radius: 8px; padding: 14px 18px; font-size: .85rem; color: #7c5a00; }
+    .config-note code { background: rgba(0,0,0,.06); padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+
+    .required-note {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      font-size: .83rem;
+      color: #991b1b;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+  </svg>
+  <div>
+    <h1>Admin Panel — Hotspot Banner</h1>
+    <span>Kelola gambar banner halaman hotspot (Desktop + Mobile)</span>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- Config note -->
+  <div class="config-note">
+    ⚙️ Pastikan variabel <code>API_BASE</code> di script bawah sudah mengarah ke server Go Anda.<br>
+    Default: <code>http://localhost:8098</code>
+  </div>
+
+  <!-- Auth -->
+  <div class="card" id="auth-section">
+    <h2>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Admin Secret
+    </h2>
+    <div class="input-group">
+      <input type="password" id="secret-input" placeholder="Masukkan ADMIN_SECRET dari .env" autocomplete="off">
+      <button class="btn btn-primary" onclick="saveSecret()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        Simpan
+      </button>
+    </div>
+    <p id="auth-status">Masukkan secret untuk mengaktifkan upload & hapus.</p>
+  </div>
+
+  <!-- Upload -->
+  <div class="card">
+    <h2>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+      Upload Banner Baru
+    </h2>
+
+    <div class="required-note">
+      ⚠️ <strong>Wajib upload kedua versi</strong> — Desktop (landscape) dan Mobile (portrait) dalam satu submit. Urutan dan slot dijamin sama antara desktop dan mobile.
+    </div>
+
+    <div class="upload-grid" style="margin-top:16px">
+      <!-- Desktop slot -->
+      <div class="upload-slot">
+        <div class="upload-slot-label">
+          <span class="badge badge-desktop">DESKTOP</span> Landscape
+        </div>
+        <div class="drop-zone" id="drop-desktop" onclick="document.getElementById('file-desktop').click()"
+             ondragover="onDragOver(event, 'drop-desktop')" ondragleave="onDragLeave(event, 'drop-desktop')" ondrop="onDrop(event, 'desktop')">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="8 12 12 8 16 12"/><line x1="12" y1="8" x2="12" y2="16"/>
+          </svg>
+          <p><strong>Klik atau drop</strong> gambar desktop</p>
+          <p>Landscape · JPG, PNG, WebP, GIF</p>
+          <div id="preview-desktop"></div>
+          <input type="file" id="file-desktop" accept="image/*" onchange="onFileSelect(event, 'desktop')">
+        </div>
+      </div>
+
+      <!-- Mobile slot -->
+      <div class="upload-slot">
+        <div class="upload-slot-label">
+          <span class="badge badge-mobile">MOBILE</span> Portrait
+        </div>
+        <div class="drop-zone" id="drop-mobile" onclick="document.getElementById('file-mobile').click()"
+             ondragover="onDragOver(event, 'drop-mobile')" ondragleave="onDragLeave(event, 'drop-mobile')" ondrop="onDrop(event, 'mobile')">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="8 12 12 8 16 12"/><line x1="12" y1="8" x2="12" y2="16"/>
+          </svg>
+          <p><strong>Klik atau drop</strong> gambar mobile</p>
+          <p>Portrait · JPG, PNG, WebP, GIF</p>
+          <div id="preview-mobile"></div>
+          <input type="file" id="file-mobile" accept="image/*" onchange="onFileSelect(event, 'mobile')">
+        </div>
+      </div>
+    </div>
+
+    <div class="upload-actions">
+      <button class="btn btn-primary" id="upload-btn" onclick="doUpload()" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/></svg>
+        Upload Kedua Gambar
+      </button>
+      <span id="upload-status" style="font-size:.88rem;color:var(--gray);"></span>
+    </div>
+
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar"></div></div>
+      <div class="progress-label" id="progress-label">Mengupload…</div>
+    </div>
+  </div>
+
+  <!-- Banner list -->
+  <div class="card">
+    <h2>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+      Semua Banner Tersimpan
+      <span style="margin-left:auto;font-size:.85rem;font-weight:400;color:var(--gray)">3 terbaru = aktif di hotspot</span>
+    </h2>
+    <div id="banner-list"><div class="loading">Memuat daftar banner…</div></div>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+  // ── CONFIG ──────────────────────────────────────────────────────────────────
+  const API_BASE = 'http://localhost:8098';
+  // ────────────────────────────────────────────────────────────────────────────
+
+  let desktopFile = null;
+  let mobileFile = null;
+  let adminSecret = sessionStorage.getItem('admin_secret') || '';
+
+  // Restore secret
+  if (adminSecret) {
+    document.getElementById('secret-input').value = adminSecret;
+    setAuthStatus(true);
+  }
+
+  function saveSecret() {
+    adminSecret = document.getElementById('secret-input').value.trim();
+    sessionStorage.setItem('admin_secret', adminSecret);
+    setAuthStatus(!!adminSecret);
+    if (adminSecret) loadBanners();
+  }
+
+  function setAuthStatus(ok) {
+    const el = document.getElementById('auth-status');
+    el.textContent = ok ? '✓ Secret tersimpan di sesi ini.' : 'Secret belum diisi.';
+    el.className = ok ? 'ok' : '';
+  }
+
+  // ── Drag & Drop ─────────────────────────────────────────────────────────────
+  function onDragOver(e, zoneId) { e.preventDefault(); document.getElementById(zoneId).classList.add('drag'); }
+  function onDragLeave(e, zoneId) { document.getElementById(zoneId).classList.remove('drag'); }
+  function onDrop(e, slot) {
+    e.preventDefault();
+    const zoneId = slot === 'desktop' ? 'drop-desktop' : 'drop-mobile';
+    document.getElementById(zoneId).classList.remove('drag');
+    const f = e.dataTransfer.files[0];
+    if (f) setFile(f, slot);
+  }
+  function onFileSelect(e, slot) { if (e.target.files[0]) setFile(e.target.files[0], slot); }
+
+  function setFile(f, slot) {
+    if (slot === 'desktop') desktopFile = f;
+    else mobileFile = f;
+
+    // Show preview
+    const previewEl = document.getElementById(`preview-${slot}`);
+    const zone = document.getElementById(`drop-${slot}`);
+    zone.classList.add('has-file');
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewEl.innerHTML = `<img src="${e.target.result}" class="preview-img" alt="Preview ${slot}">` +
+        `<div class="file-info">${f.name} (${(f.size/1024/1024).toFixed(2)} MB)</div>`;
+    };
+    reader.readAsDataURL(f);
+
+    updateUploadButton();
+  }
+
+  function updateUploadButton() {
+    const btn = document.getElementById('upload-btn');
+    const status = document.getElementById('upload-status');
+    const ready = desktopFile && mobileFile;
+
+    btn.disabled = !ready;
+
+    if (!desktopFile && !mobileFile) status.textContent = 'Pilih gambar desktop dan mobile.';
+    else if (!desktopFile) status.textContent = '⚠️ Belum ada gambar desktop.';
+    else if (!mobileFile) status.textContent = '⚠️ Belum ada gambar mobile.';
+    else status.textContent = '✓ Siap upload kedua versi.';
+  }
+
+  // ── Upload ──────────────────────────────────────────────────────────────────
+  async function doUpload() {
+    if (!desktopFile || !mobileFile) { toast('Upload kedua gambar (desktop + mobile).', 'error'); return; }
+    if (!adminSecret) { toast('Masukkan Admin Secret terlebih dahulu.', 'error'); return; }
+
+    const btn = document.getElementById('upload-btn');
+    btn.disabled = true;
+
+    const pw = document.getElementById('progress-wrap');
+    const pb = document.getElementById('progress-bar');
+    const pl = document.getElementById('progress-label');
+    pw.style.display = 'block';
+    pb.style.width = '0%';
+    pl.textContent = 'Mengupload desktop + mobile…';
+
+    const fd = new FormData();
+    fd.append('desktop', desktopFile);
+    fd.append('mobile', mobileFile);
+
+    try {
+      const xhr = new XMLHttpRequest();
+      const done = new Promise((resolve, reject) => {
+        xhr.upload.addEventListener('progress', e => {
+          if (e.lengthComputable) {
+            const pct = Math.round(e.loaded / e.total * 100);
+            pb.style.width = pct + '%';
+            pl.textContent = `Mengupload… ${pct}%`;
+          }
+        });
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.responseText);
+          else reject(new Error(xhr.responseText || `HTTP ${xhr.status}`));
+        });
+        xhr.addEventListener('error', () => reject(new Error('Network error')));
+      });
+
+      xhr.open('POST', `${API_BASE}/api/upload`);
+      xhr.setRequestHeader('X-Admin-Secret', adminSecret);
+      xhr.send(fd);
+
+      const responseText = await done;
+      const data = JSON.parse(responseText);
+
+      toast('Upload berhasil! Desktop + Mobile tersimpan.', 'success');
+      logAppend(`✅ Upload pair: desktop=${data.desktop?.filename}, mobile=${data.mobile?.filename}`);
+
+      // Reset form
+      desktopFile = null;
+      mobileFile = null;
+      document.getElementById('file-desktop').value = '';
+      document.getElementById('file-mobile').value = '';
+      document.getElementById('preview-desktop').innerHTML = '';
+      document.getElementById('preview-mobile').innerHTML = '';
+      document.getElementById('drop-desktop').classList.remove('has-file');
+      document.getElementById('drop-mobile').classList.remove('has-file');
+      updateUploadButton();
+      pw.style.display = 'none';
+
+      loadBanners();
+    } catch (err) {
+      toast('Gagal upload: ' + err.message, 'error');
+      btn.disabled = false;
+      pw.style.display = 'none';
+    }
+  }
+
+  // ── Load Banners ────────────────────────────────────────────────────────────
+  async function loadBanners() {
+    const container = document.getElementById('banner-list');
+    container.innerHTML = '<div class="loading">Memuat…</div>';
+
+    try {
+      const res = await fetch(`${API_BASE}/api/banners?all=true`);
+      if (!res.ok) throw new Error(res.statusText);
+      const data = await res.json();
+      const banners = data.banners || [];
+
+      if (!banners.length) {
+        container.innerHTML = `<div class="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+          <p>Belum ada banner. Upload pasangan pertama Anda!</p>
+        </div>`;
+        return;
+      }
+
+      const grid = document.createElement('div');
+      grid.className = 'banner-grid';
+
+      banners.forEach(pair => {
+        const isActive = pair.slot <= 3;
+        const date = new Date(pair.last_modified).toLocaleString('id-ID', { dateStyle:'medium', timeStyle:'short' });
+
+        const desktopImg = pair.desktop
+          ? `<img src="${pair.desktop.url}" alt="Desktop" loading="lazy" onerror="this.style.background='#eee';this.alt='Gagal'">`
+          : '<div style="height:100px;background:#f5f5f5;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:.8rem">Tidak ada</div>';
+
+        const mobileImg = pair.mobile
+          ? `<img src="${pair.mobile.url}" alt="Mobile" loading="lazy" onerror="this.style.background='#eee';this.alt='Gagal'">`
+          : '<div style="height:100px;background:#f5f5f5;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:.8rem">Tidak ada</div>';
+
+        // Ambil filename desktop untuk delete (bisa juga mobile, keduanya dihapus)
+        const deleteFilename = pair.desktop?.filename || pair.mobile?.filename || '';
+
+        const div = document.createElement('div');
+        div.className = 'banner-pair-card';
+        div.innerHTML = `
+          <div class="pair-header">
+            <span class="pair-slot ${isActive ? '' : 'inactive'}">${isActive ? `Slot ${pair.slot} — Aktif` : `Slot ${pair.slot}`}</span>
+            <span class="pair-date">📅 ${date}</span>
+          </div>
+          <div class="pair-images">
+            <div class="img-col">
+              <div class="img-col-label">🖥️ Desktop</div>
+              ${desktopImg}
+            </div>
+            <div class="img-col">
+              <div class="img-col-label">📱 Mobile</div>
+              ${mobileImg}
+            </div>
+          </div>
+          <div class="pair-footer">
+            <button class="btn btn-danger" onclick="doDelete('${deleteFilename}', this)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+              Hapus Pair
+            </button>
+          </div>`;
+        grid.appendChild(div);
+      });
+
+      container.innerHTML = '';
+      container.appendChild(grid);
+
+    } catch (err) {
+      container.innerHTML = `<div class="empty-state"><p>⚠️ Gagal terhubung ke API: ${err.message}<br><small>Pastikan Go server berjalan dan API_BASE sudah benar.</small></p></div>`;
+    }
+  }
+
+  // ── Delete ──────────────────────────────────────────────────────────────────
+  async function doDelete(filename, btn) {
+    if (!adminSecret) { toast('Masukkan Admin Secret terlebih dahulu.', 'error'); return; }
+    if (!confirm(`Hapus pasangan banner?\n${filename}`)) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Menghapus…';
+
+    try {
+      const res = await fetch(`${API_BASE}/api/delete`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Secret': adminSecret },
+        body: JSON.stringify({ filename })
+      });
+      if (!res.ok) throw new Error(await res.text());
+      toast('Pasangan banner berhasil dihapus.', 'success');
+      loadBanners();
+    } catch (err) {
+      toast('Gagal hapus: ' + err.message, 'error');
+      btn.disabled = false;
+      btn.textContent = 'Hapus Pair';
+    }
+  }
+
+  // ── Toast ───────────────────────────────────────────────────────────────────
+  function toast(msg, type = '') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = `show ${type}`;
+    setTimeout(() => el.className = '', 3000);
+  }
+
+  // ── Debug log (append ke console, bisa dihapus) ─────────────────────────────
+  function logAppend(msg) { console.log(`[banner-admin] ${msg}`); }
+
+  // Load on start
+  loadBanners();
+</script>
+</body>
+</html>
