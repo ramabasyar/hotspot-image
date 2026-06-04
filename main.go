@@ -35,6 +35,16 @@ func loadConfig() Config {
 	// Load .env file (ignore error jika tidak ada, misal di Docker)
 	_ = godotenv.Load()
 
+	listenAddr := getEnv("LISTEN_ADDR", ":8098")
+	// Pastikan selalu dimulai dengan ":" (bind semua interface)
+	// Kalau user isi "0.0.0.0:8098", tetap jalan, tapi kalau isi tanpa ":" kita perbaiki
+	if listenAddr != "" && listenAddr[0] != ':' && listenAddr[0] != '[' {
+		// Coba extract port saja
+		if idx := strings.LastIndex(listenAddr, ":"); idx >= 0 {
+			listenAddr = listenAddr[idx:] // ":8098"
+		}
+	}
+
 	return Config{
 		MinioEndpoint:   getEnv("MINIO_ENDPOINT", "localhost:9000"),
 		MinioAccessKey:  getEnv("MINIO_ACCESS_KEY", "minioadmin"),
@@ -42,7 +52,7 @@ func loadConfig() Config {
 		MinioBucket:     getEnv("MINIO_BUCKET", "banners"),
 		MinioPublicBase: getEnv("MINIO_PUBLIC_BASE", "http://localhost:9000/banners"),
 		AdminSecret:     getEnv("ADMIN_SECRET", "ganti-dengan-secret-anda"),
-		ListenAddr:      getEnv("LISTEN_ADDR", ":8080"),
+		ListenAddr:      listenAddr,
 		UseSSL:          getEnv("MINIO_USE_SSL", "false") == "true",
 	}
 }
@@ -137,25 +147,11 @@ func NewServer(cfg Config) (*Server, error) {
 func (s *Server) routes() http.Handler {
 	mux := http.NewServeMux()
 
-	// CORS middleware wrapper
-	wrap := func(h http.HandlerFunc) http.HandlerFunc {
-		return func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Access-Control-Allow-Origin", "*")
-			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
-			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-Admin-Secret")
-			if r.Method == http.MethodOptions {
-				w.WriteHeader(http.StatusNoContent)
-				return
-			}
-			h(w, r)
-		}
-	}
-
-	mux.HandleFunc("/api/banners", wrap(s.handleBanners))
-	mux.HandleFunc("/api/banners/desktop", wrap(s.handleBannersDesktop))
-	mux.HandleFunc("/api/banners/mobile", wrap(s.handleBannersMobile))
-	mux.HandleFunc("/api/upload", wrap(s.handleUpload))
-	mux.HandleFunc("/api/delete", wrap(s.handleDelete))
+	mux.HandleFunc("/api/banners", s.handleBanners)
+	mux.HandleFunc("/api/banners/desktop", s.handleBannersDesktop)
+	mux.HandleFunc("/api/banners/mobile", s.handleBannersMobile)
+	mux.HandleFunc("/api/upload", s.handleUpload)
+	mux.HandleFunc("/api/delete", s.handleDelete)
 
 	// Serve admin UI
 	mux.Handle("/admin/", http.StripPrefix("/admin/", http.FileServer(http.Dir("admin"))))
@@ -164,7 +160,24 @@ func (s *Server) routes() http.Handler {
 		w.Write([]byte("ok"))
 	})
 
-	return mux
+	// Global CORS middleware — semua route
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		origin := r.Header.Get("Origin")
+		if origin == "" {
+			origin = "*"
+		}
+		w.Header().Set("Access-Control-Allow-Origin", origin)
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-Admin-Secret")
+		w.Header().Set("Access-Control-Allow-Credentials", "false")
+		w.Header().Set("Access-Control-Max-Age", "86400")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		mux.ServeHTTP(w, r)
+	})
 }
 
 // ── GET /api/banners → banner pairs untuk admin (all=true) atau 3 terbaru ────
@@ -524,11 +537,11 @@ func main() {
 		log.Fatalf("Gagal inisialisasi server: %v", err)
 	}
 
-	log.Printf("🚀 Server berjalan di %s", cfg.ListenAddr)
+	log.Printf("🚀 Server berjalan di 0.0.0.0%s (semua interface)", cfg.ListenAddr)
 	log.Printf("📦 MinIO endpoint : %s", cfg.MinioEndpoint)
 	log.Printf("🗂  Bucket         : %s", cfg.MinioBucket)
 	log.Printf("🔗 Public base URL : %s", cfg.MinioPublicBase)
-	log.Printf("🛠  Admin UI       : http://localhost%s/admin/", cfg.ListenAddr)
+	log.Printf("🛠  Admin UI       : http://<IP_SERVER>%s/admin/", cfg.ListenAddr)
 
 	if err := http.ListenAndServe(cfg.ListenAddr, srv.routes()); err != nil {
 		log.Fatal(err)
